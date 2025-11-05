@@ -12,3 +12,6 @@ if __name__ == "__main__":
     fc2 = nn.Linear(in_features=1024, out_features=2048, bias=True)
     out2 = fc2(_in)
     print(f"practice2: {out2.shape}")
+
+    out3 = out.reshape(32, 16, 16)
+    print(f"practice3: {out3.shape}")
