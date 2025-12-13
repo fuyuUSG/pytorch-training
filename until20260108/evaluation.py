@@ -29,6 +29,6 @@ if __name__=="__main__":
         for images, labels in test_loader:
             outputs = model(images)
             val_acc += (outputs.max(1)[1] == labels).sum().item()
-    avg_val_acc = val_acc / len(test_loader/dataset)
+    avg_val_acc = val_acc / len(test_loader.dataset)
 
     print('Accuracy: {:.4f}'.format(avg_val_acc))

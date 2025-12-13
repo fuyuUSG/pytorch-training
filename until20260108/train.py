@@ -7,7 +7,7 @@ import torch.optim as optim
 # dataset.py内のdatasets関数をインポート
 from dataset import cifar_dataset
 # model.py内のCNNクラスをインポート
-from model import py内のCNNクラスをインポート
+from model import CNN
 
 # 保存先のパス
 model_path = 'cifar_cnn.pth'
@@ -18,12 +18,12 @@ train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
 
 # モデル、損失関数、最適化関数の定義
 model = CNN()
-criterion = nn.CrossEntoropyloss()
-optimizer = optim.SGD(model.parameters(), lr=0.01)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 if __name__=="__main__":
     epochs = 20
 
-    for epoch in ranage(epochs):
+    for epoch in range(epochs):
         train_loss = 0
         train_acc = 0
 
@@ -34,9 +34,14 @@ if __name__=="__main__":
             outputs = model(images)
             loss = criterion(outputs, labels)
             train_loss += loss.item()
-            train_acc += (outputs.max(1)[1] == labels).sum().item()
+            _, predicted = torch.max(outputs.data, 1)
+            train_acc += (predicted == labels).sum().item()
+            #train_acc += (outputs.max(1)[1] == labels).sum().item()
             loss.backward()
             optimizer.step()
+
+            if (i + 1) % 100 == 0:
+                print(f'Epoch [{epoch+1}/{epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}')
 
         avg_train_loss = train_loss / len(train_loader)
         avg_train_acc = train_acc / len(train_loader.dataset)
@@ -49,4 +54,4 @@ if __name__=="__main__":
             'loss': avg_train_loss
         }, model_path)
 
-        print('Epoch: {}, Loss: {loss:.4f}',format(epoch+1, i+1, loss=avg_train_loss))
+        print('Epoch: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch+1, avg_train_loss, avg_train_acc))
