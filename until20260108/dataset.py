@@ -1,8 +1,14 @@
 from torchvision import transforms, datasets
 
 def cifar_dataset():
-    # 正規化(平均0.5、標準偏差0.5)
-    transform = transforms.Compose([
+    train_transform = transforms.Compose([
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomCrop(32, padding=4),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+
+    test_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
@@ -10,14 +16,14 @@ def cifar_dataset():
     train_data = datasets.CIFAR10(
         root='./',
         train=True,
-        transform=transform,
+        transform=train_transform,
         download=True
         )
 
     test_data = datasets.CIFAR10(
         root='./',
         train=False,
-        transform=transform,
+        transform=test_transform,
         download=True
     )
     return train_data, test_data
