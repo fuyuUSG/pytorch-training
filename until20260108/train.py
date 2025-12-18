@@ -19,7 +19,7 @@ train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
 # モデル、損失関数、最適化関数の定義
 model = CNN()
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-4)
 if __name__=="__main__":
     epochs = 20
 
