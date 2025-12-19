@@ -9,27 +9,30 @@ from dataset import cifar_dataset
 # model.py内のCNNクラスをインポート
 from model import CNN
 
-# 保存先のパス
-model_path = 'cifar_cnn.pth'
+def main():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# データローダーからデータを受け取る
-train_data, _ = cifar_dataset()
-train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
+    # 保存先のパス
+    model_path = 'cifar_cnn.pth'
 
-# モデル、損失関数、最適化関数の定義
-model = CNN()
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-4)
-if __name__=="__main__":
+    # データローダーからデータを受け取る
+    train_data, _ = cifar_dataset()
+    train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
+
+    # モデル、損失関数、最適化関数の定義
+    model = CNN().to(device)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-4)
     epochs = 20
 
     for epoch in range(epochs):
         train_loss = 0
-        train_acc = 0
+        train_acc = 0        
 
         # train
         model.train()
         for i, (images, labels) in enumerate(train_loader):
+            images, labels = images.to(device), labels.to(device)
             optimizer.zero_grad()
             outputs = model(images)
             loss = criterion(outputs, labels)
@@ -55,3 +58,6 @@ if __name__=="__main__":
         }, model_path)
 
         print('Epoch: {}, Loss: {:.4f}, Acc: {:.4f}'.format(epoch+1, avg_train_loss, avg_train_acc))
+    
+if __name__=="__main__":
+    main()
